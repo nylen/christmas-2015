@@ -427,7 +427,7 @@ static int hue = 0;
       leds[px(x, y)] = CHSV((hue + x*4 + y*2) & 0xff, 255, value);
     }
   }
-  hue++;
+  hue += 2;
   frame(10);
 }
 
