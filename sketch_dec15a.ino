@@ -430,8 +430,10 @@ static int hue = 0;
   frame(10);
 }
 
+template<uint8_t DATA_PIN> class ALMOST_NEOPIXEL : public WS2812Controller800Khz<DATA_PIN, BRG> {};
+
 void setup() {
-  FastLED.addLeds<WHATEVER_THESE_ARE, 2>(leds, NUM_LEDS);
+  FastLED.addLeds<ALMOST_NEOPIXEL, 2>(leds, NUM_LEDS);
 }
 
 bool isRainbow = false;
