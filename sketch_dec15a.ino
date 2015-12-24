@@ -255,7 +255,7 @@ static bool init = true;
 /**
  * Pattern: SnowHoHo
  */
-void SnowHoHo(int delayMs, byte framesPerStep, int chance, int value) {
+bool SnowHoHo(int delayMs, byte framesPerStep, int chance, int value) {
 #define SnowHoHo_snowflakes 40
 static byte xs[SnowHoHo_snowflakes];
 static byte ys[SnowHoHo_snowflakes];
@@ -349,13 +349,19 @@ if (init) {
     }
   }
 
+  // Draw stuff
+  frame(delayMs);
+
   // Count frames and advance sprite cycle
-  frameNum = (frameNum + 1) % framesPerStep;
+  bool didFullCycle = false;
   if (frameNum == 0) {
     cyclePos = (cyclePos + 1) % 16;
+    didFullCycle = (cyclePos == 0);
   }
-  
-  frame(delayMs);
+  frameNum = (frameNum + 1) % framesPerStep;
+
+  // Let the caller know if we did a full cycle
+  return didFullCycle;
 }
 
 /**
