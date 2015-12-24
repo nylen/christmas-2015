@@ -206,11 +206,11 @@ static byte w = 3;
 static byte h = 4;
   rect(x, y, w, h, CRGB::Black);
   x += dx;
-  if (x >= X_SIZE - w || x == 0) {
+  if (x >= X_SIZE - w || x <= 0) {
     dx = -dx;
   }
   y += dy;
-  if (y == Y_SIZE - h || y == 0) {
+  if (y >= Y_SIZE - h || y <= 0) {
     dy = -dy;
   }
   rect(x, y, w, h, CRGB(value, value, value / 4));
