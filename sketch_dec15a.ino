@@ -54,7 +54,10 @@ void drawSprite(byte x, byte y, sprite * s, CRGB color) {
 }
 
 int px(byte x, byte y) {
-  // LED 0 is top left (X=0)
+  // Screen is inverted
+  x = X_SIZE - x - 1;
+  y = Y_SIZE - y - 1;
+  // Now act as though LED 0 is top left (X=0)
   // LED y_size is where X=1 starts
   // Calculate the position along the strand due to the X offset
   int pos_X = x * Y_SIZE;
