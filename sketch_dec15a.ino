@@ -21,6 +21,24 @@ enum SnakeBackground {
  * Utility functions
  */
 
+int px(byte x, byte y) {
+  // Screen is inverted
+  x = X_SIZE - x - 1;
+  y = Y_SIZE - y - 1;
+  // Now act as though LED 0 is top left (X=0)
+  // LED y_size is where X=1 starts
+  // Calculate the position along the strand due to the X offset
+  int pos_X = x * Y_SIZE;
+  // LED 0 is Y=0
+  // LED y_size-1 is Y=y_size-1
+  // LED y_size   is Y=y_size-1
+  // LED 2*y_size-1 is Y=0
+  // LED 2*y_size   is Y=0
+  // If on an odd X coordinate, then Y is inverted
+  int pos_Y = (x % 2 ? Y_SIZE - y - 1 : y);
+  return pos_X + pos_Y;
+}
+
 struct sprite {
   byte size = 0;
   uint64_t data = 0;
@@ -41,35 +59,16 @@ struct sprite {
     byte dataBit = x + y * width();
     return (data >> dataBit) & 1;
   }
-};
-
-void drawSprite(byte x, byte y, sprite * s, CRGB color) {
-  for (int sx = 0; sx < s->width(); sx++) {
-    for (int sy = 0; sy < s->height(); sy++) {
-      if (s->hasPixel(sx, sy)) {
-        leds[px(x + sx, y + sy)] = color;
+  void draw(byte x, byte y, CRGB color) {
+    for (int sx = 0; sx < width(); sx++) {
+      for (int sy = 0; sy < height(); sy++) {
+        if (hasPixel(sx, sy)) {
+          leds[px(x + sx, y + sy)] = color;
+        }
       }
     }
   }
-}
-
-int px(byte x, byte y) {
-  // Screen is inverted
-  x = X_SIZE - x - 1;
-  y = Y_SIZE - y - 1;
-  // Now act as though LED 0 is top left (X=0)
-  // LED y_size is where X=1 starts
-  // Calculate the position along the strand due to the X offset
-  int pos_X = x * Y_SIZE;
-  // LED 0 is Y=0
-  // LED y_size-1 is Y=y_size-1
-  // LED y_size   is Y=y_size-1
-  // LED 2*y_size-1 is Y=0
-  // LED 2*y_size   is Y=0
-  // If on an odd X coordinate, then Y is inverted
-  int pos_Y = (x % 2 ? Y_SIZE - y - 1 : y);
-  return pos_X + pos_Y;
-}
+};
 
 void rect(byte x, byte y, byte w, byte h, CRGB color) {
   for (byte i = x; i < x + w; i++) {
@@ -294,29 +293,29 @@ if (SnowHoHo_init) {
     CRGB color = CRGB(value, 0, 0);
     byte y = (Y_SIZE - s_Ho.height()) / 2;
     if (spriteStep <= 4) {
-      drawSprite(0, y, &s_Ho, (spriteStep < 4 ? color : CRGB::Black));
+      s_Ho.draw(0, y, (spriteStep < 4 ? color : CRGB::Black));
     }
     if (spriteStep <= 5 && spriteStep > 0) {
-      drawSprite(8, y, &s_Ho, (spriteStep < 5 ? color : CRGB::Black));
+      s_Ho.draw(8, y, (spriteStep < 5 ? color : CRGB::Black));
     }
     if (spriteStep <= 6 && spriteStep > 1) {
-      drawSprite(16, y, &s_Ho, (spriteStep < 6 ? color : CRGB::Black));
+      s_Ho.draw(16, y, (spriteStep < 6 ? color : CRGB::Black));
     }
   } else {
     // Christmas trees cycle
     CRGB color = CRGB(value / 8, value / 4, 0);
     byte y = (Y_SIZE - (s_Tree1.height() + s_Tree2.height())) / 2;
     if (spriteStep <= 4) {
-      drawSprite(0, y + 0, &s_Tree1, (spriteStep < 4 ? color : CRGB::Black));
-      drawSprite(0, y + 8, &s_Tree2, (spriteStep < 4 ? color : CRGB::Black));
+      s_Tree1.draw(0, y + 0, (spriteStep < 4 ? color : CRGB::Black));
+      s_Tree2.draw(0, y + 8, (spriteStep < 4 ? color : CRGB::Black));
     }
     if (spriteStep <= 5 && spriteStep > 0) {
-      drawSprite(8, y + 0, &s_Tree1, (spriteStep < 5 ? color : CRGB::Black));
-      drawSprite(8, y + 8, &s_Tree2, (spriteStep < 5 ? color : CRGB::Black));
+      s_Tree1.draw(8, y + 0, (spriteStep < 5 ? color : CRGB::Black));
+      s_Tree2.draw(8, y + 8, (spriteStep < 5 ? color : CRGB::Black));
     }
     if (spriteStep <= 6 && spriteStep > 1) {
-      drawSprite(16, y + 0, &s_Tree1, (spriteStep < 6 ? color : CRGB::Black));
-      drawSprite(16, y + 8, &s_Tree2, (spriteStep < 6 ? color : CRGB::Black));
+      s_Tree1.draw(16, y + 0, (spriteStep < 6 ? color : CRGB::Black));
+      s_Tree2.draw(16, y + 8, (spriteStep < 6 ? color : CRGB::Black));
     }
   }
   
