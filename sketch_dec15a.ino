@@ -255,6 +255,7 @@ static bool init = true;
 /**
  * Pattern: SnowHoHo
  */
+bool SnowHoHo_init = true;
 bool SnowHoHo(int delayMs, byte framesPerStep, int chance, int value) {
 #define SnowHoHo_snowflakes 40
 static byte xs[SnowHoHo_snowflakes];
@@ -262,12 +263,12 @@ static byte ys[SnowHoHo_snowflakes];
 static byte vs[SnowHoHo_snowflakes];
 static byte cyclePos = 0;
 static byte frameNum = 0;
-static bool init = true;
-if (init) {
+if (SnowHoHo_init) {
   for (int i = 0; i < SnowHoHo_snowflakes; i++) {
     ys[i] = Y_SIZE;
+    cyclePos = 14;
   }
-  init = false;
+  SnowHoHo_init = false;
 }
 
   // Erase snowflakes from last iteration
@@ -354,11 +355,11 @@ if (init) {
 
   // Count frames and advance sprite cycle
   bool didFullCycle = false;
+  frameNum = (frameNum + 1) % framesPerStep;
   if (frameNum == 0) {
     cyclePos = (cyclePos + 1) % 16;
     didFullCycle = (cyclePos == 0);
   }
-  frameNum = (frameNum + 1) % framesPerStep;
 
   // Let the caller know if we did a full cycle
   return didFullCycle;
@@ -434,9 +435,40 @@ void setup() {
   FastLED.addLeds<WHATEVER_THESE_ARE, 2>(leds, NUM_LEDS);
 }
 
+bool isRainbow = false;
+int cycleCount = 0;
+#define SNOW_CYCLES 3
+#define RAINBOW_FRAMES 500
+#define RAINBOW_FADE_FRAMES 50
+#define RAINBOW_VALUE 100
+
 void loop() {
+  if (isRainbow) {
+    cycleCount++;
+    if (cycleCount < RAINBOW_FADE_FRAMES) {
+      RainbowGradient(cycleCount * RAINBOW_VALUE / RAINBOW_FADE_FRAMES);
+    } else if (cycleCount >= RAINBOW_FRAMES - RAINBOW_FADE_FRAMES) {
+      RainbowGradient((RAINBOW_FRAMES - cycleCount) * RAINBOW_VALUE / RAINBOW_FADE_FRAMES);
+      if (cycleCount == RAINBOW_FRAMES) {
+        cycleCount = 0;
+        isRainbow = false;
+        rect(0, 0, X_SIZE, Y_SIZE, CRGB::Black);
+        SnowHoHo_init = true;
+      }
+    } else {
+      RainbowGradient(RAINBOW_VALUE);
+    }
+  } else {
+    if (SnowHoHo(90, 8, 3000, 100)) {
+      cycleCount++;
+      // 1 extra because the first "cycle" is just a few frames of snow
+      if (cycleCount == SNOW_CYCLES + 1) {
+        isRainbow = true;
+      }
+    }
+  }
+  
   //Snow(100, 2000, 100);
-  SnowHoHo(90, 8, 3000, 100);
   //CycleColors(1000);
   //TestPattern(1000, 255);
   //RainbowGradient(200);
