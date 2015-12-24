@@ -274,8 +274,6 @@ if (init) {
     }
   }
 
-  cyclePos = 11;
-  
   // Draw sprites, if any
   // 8 steps in a cycle:
   // 0: "HO" "--" "--"
