@@ -151,7 +151,7 @@ static int snake_len = 8;
   }
   for (int j = 0; j < num_snakes; j++) {
     for (int i = offset; i < offset + snake_len; i++) {
-      leds[(i + NUM_LEDS * j / num_snakes) % NUM_LEDS] = CHSV(hue, 255, 255);
+      leds[(i + NUM_LEDS * j / num_snakes) % NUM_LEDS] = CHSV(hue + 255 / num_snakes * j * 2, 255, 255);
     }
   }
   frame(30);
