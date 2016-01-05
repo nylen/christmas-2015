@@ -436,38 +436,8 @@ void setup() {
   FastLED.addLeds<ALMOST_NEOPIXEL, 2>(leds, NUM_LEDS);
 }
 
-bool isRainbow = false;
-int cycleCount = 0;
-#define SNOW_CYCLES 3
-#define RAINBOW_FRAMES 500
-#define RAINBOW_FADE_FRAMES 50
-#define RAINBOW_VALUE 100
-
 void loop() {
-  if (isRainbow) {
-    cycleCount++;
-    if (cycleCount < RAINBOW_FADE_FRAMES) {
-      RainbowGradient(cycleCount * RAINBOW_VALUE / RAINBOW_FADE_FRAMES);
-    } else if (cycleCount >= RAINBOW_FRAMES - RAINBOW_FADE_FRAMES) {
-      RainbowGradient((RAINBOW_FRAMES - cycleCount) * RAINBOW_VALUE / RAINBOW_FADE_FRAMES);
-      if (cycleCount == RAINBOW_FRAMES) {
-        cycleCount = 0;
-        isRainbow = false;
-        rect(0, 0, X_SIZE, Y_SIZE, CRGB::Black);
-        SnowHoHo_init = true;
-      }
-    } else {
-      RainbowGradient(RAINBOW_VALUE);
-    }
-  } else {
-    if (SnowHoHo(90, 8, 3000, 100)) {
-      cycleCount++;
-      // 1 extra because the first "cycle" is just a few frames of snow
-      if (cycleCount == SNOW_CYCLES + 1) {
-        isRainbow = true;
-      }
-    }
-  }
+  Snakes(SnakeBackground::RAINBOW);
   
   //Snow(100, 2000, 100);
   //CycleColors(1000);
