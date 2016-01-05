@@ -140,7 +140,7 @@ static int snake_len = 8;
       break;
     case SnakeBackground::RAINBOW:
       for (int i = 0; i < NUM_LEDS; i++) {
-        leds[i] = CHSV(sin8(i * 2 + hue), 192, 64);
+        leds[i] = CHSV(sin8(i * 2 + hue), 255, 32);
       }
       break;
     case SnakeBackground::NOISE:
