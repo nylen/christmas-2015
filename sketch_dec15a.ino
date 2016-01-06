@@ -437,9 +437,7 @@ void setup() {
 }
 
 void loop() {
-  Snakes(SnakeBackground::RAINBOW);
-  
-  //Snow(100, 2000, 100);
+  Snow(100, 2000, 150);
   //CycleColors(1000);
   //TestPattern(1000, 255);
   //RainbowGradient(200);
